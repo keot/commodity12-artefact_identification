@@ -22,11 +22,17 @@ import au.com.bytecode.opencsv.CSVReader;
  */
 public class ArtefactSensingTest {
 	private CSVReader reader;
+	
+	// Input test files
 	private static String ecg_saturated_csv = "testfiles/ecg-saturated.csv";
 	private static String ecg_mains_csv = "testfiles/ecg-mains.csv";
 	private static String ecg_normal_csv = "testfiles/ecg-normal.csv";
+	
+	// Output test files
+	private static String ecg_saturated_results_csv = "testfiles/ecg-saturated-ECGLowSaturation.csv";
+	private static String ecg_mains_results_csv = "testfiles/ecg-mains-ECGMainsInterference.csv";
 
-	private final int[] readCSV(String file_name) {
+	private final int[] readCSVasArray(String file_name) {
 		int[] data;
 		
 		try {
@@ -58,13 +64,36 @@ public class ArtefactSensingTest {
 		return data;
 	}
 	
-	/**
-	 * Test method for {@link uk.ac.ic.ee.cas.ArtefactSensing#ECGSaturation(int[])}.
-	 */
+	private final Map<Integer, Integer> readCSVasMap(String file_name) {
+		Map<Integer, Integer> data = new HashMap<Integer, Integer>();
+		
+		try {
+			// Open the test file
+			reader = new CSVReader(new FileReader(file_name));
+			List<String[]> inputFile = reader.readAll();
+			reader.close();
+			
+			for (String[] line: inputFile) {
+				if (line.length == 2) {
+					data.put(Integer.parseInt(line[0]), Integer.parseInt(line[1]) );
+				} else {
+					fail("The input CSV file '" + file_name + "' does not contain two columns.");
+					return null;
+				}
+			}
+		
+		} catch (IOException e) {
+			fail("Unable to read input CSV file '" + file_name + "' for reading.");
+			return null;
+		}
+		
+		return data;
+	}
+	
 	@Test
 	public void testECGSaturationNormalData() {		
 			// Perform the test
-			int[] input_ecg_data = readCSV(ecg_normal_csv);
+			int[] input_ecg_data = readCSVasArray(ecg_normal_csv);
 			ArtefactSensing tester = new ArtefactSensing();
 			
 			// Create empty list for ecg_unsaturated_csv (i.e. there are no events)
@@ -77,13 +106,11 @@ public class ArtefactSensingTest {
 	@Test
 	public void testECGSaturationBadData() {		
 			// Perform the test
-			int[] input_ecg_data = readCSV(ecg_saturated_csv);
+			int[] input_ecg_data = readCSVasArray(ecg_saturated_csv);
 			ArtefactSensing tester = new ArtefactSensing();
 			
-			// Create result manually for ecg_saturated_csv
-			Map<Integer, Integer> outputECGData = new HashMap<Integer, Integer>();
-			outputECGData.put(945, 378); // saturated low
-			outputECGData.put(3024, 1008); // saturated high
+			// Load the results from the external file
+			Map<Integer, Integer> outputECGData = readCSVasMap(ecg_saturated_results_csv);
 			
 			// Assert the result
 			assertEquals("ECG saturation, bad signal: output data incorrect.", outputECGData, tester.ECGSaturation(input_ecg_data) );
@@ -92,12 +119,11 @@ public class ArtefactSensingTest {
 	@Test
 	public void testECGMainsInterferenceBadData() {		
 			// Perform the test
-			int[] input_ecg_data = readCSV(ecg_mains_csv);
+			int[] input_ecg_data = readCSVasArray(ecg_mains_csv);
 			ArtefactSensing tester = new ArtefactSensing();
 			
 			// Entire signal is mains noise
-			Map<Integer, Integer> outputECGData = new HashMap<Integer, Integer>();
-			outputECGData.put(0, input_ecg_data.length);
+			Map<Integer, Integer> outputECGData = readCSVasMap(ecg_mains_results_csv);
 			
 			// Assert the result
 			assertEquals("ECG mains interference, bad signal: output data incorrect.", outputECGData, tester.ECGMainsInterference(input_ecg_data) );
@@ -106,7 +132,7 @@ public class ArtefactSensingTest {
 	@Test
 	public void testECGMainsInterferenceNormalData() {		
 			// Perform the test
-			int[] input_ecg_data = readCSV(ecg_normal_csv);
+			int[] input_ecg_data = readCSVasArray(ecg_normal_csv);
 			ArtefactSensing tester = new ArtefactSensing();
 			
 			// Create empty result
@@ -119,7 +145,7 @@ public class ArtefactSensingTest {
 	@Test
 	public void testECGLowSNRNormalData() {		
 			// Perform the test
-			int[] input_ecg_data = readCSV(ecg_normal_csv);
+			int[] input_ecg_data = readCSVasArray(ecg_normal_csv);
 			ArtefactSensing tester = new ArtefactSensing();
 			
 			// Create empty result
@@ -132,7 +158,7 @@ public class ArtefactSensingTest {
 	@Test
 	public void testECGLowSNRBadData() {		
 			// Perform the test
-			int[] input_ecg_data = readCSV(ecg_mains_csv);
+			int[] input_ecg_data = readCSVasArray(ecg_mains_csv);
 			ArtefactSensing tester = new ArtefactSensing();
 			
 			// Create empty result

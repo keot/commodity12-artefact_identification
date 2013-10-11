@@ -8,7 +8,7 @@ import java.util.TreeSet;
 public class ArtefactSensing {
 	private static int ecg_packet_length = 63;
 	private static double ecg_snr = 0.2; // based on observation
-	private static int ecg_quantisation_jitter = 5; // based on observation
+	private static int ecg_quantisation_jitter = 2; // based on observation
 	private static int ecg_maximum = 949; // based on observation
 	private static int ecg_minimum = 75; // based on observation
 	
