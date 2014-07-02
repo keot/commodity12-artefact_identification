@@ -1,0 +1,22 @@
+# Apple Metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Windows default autosave extension
+*.asv
+
+# OSX / *nix default autosave extension
+*.m~
+
+# Compiled MEX binaries (all platforms)
+*.mex*
+
+# Simulink Code Generation	
+slprj/
