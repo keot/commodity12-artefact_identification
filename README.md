@@ -67,7 +67,7 @@ saturationStaticThreshold.m
 
 ```
 derivsecgsyn.m               # Required by ecgsyn.m
-ecgsyn.m                     # ECGSYN[1][] is a realistic ECG waveform generator, and is used to produce the artificial signals for comparative analysis throughout the profiling
+ecgsyn.m                     # ECGSYN[1] is a realistic ECG waveform generator, and is used to produce the artificial signals for comparative analysis throughout the profiling
 filterProfiling.m            # An example profiling script using MATLAB DCS
 filterProfilingStarter.m     # An example wrapper for the profiling script
 noiseProfiling.m             # The noise profiling script returns the results for the seven SQIs (Signal Quality Indicies) for all combinations of noise and heart rate
@@ -75,6 +75,8 @@ qrsDetector.m                # A helper script to load two beat-detection script
 saveResults.m                # Dumps the contents of an SQI result structure to a file
 sqi.m                        # The Signal Quality Indicies calculator
 ```
+
+The beat-detection algorithms require WQRS installed, and OSEAWRAPPER to function correctly.
 
 Peforms seven Signal Quality Indicies (SQIs) to determine the quality of the ECG signal. Some of these indices may require normalisation.
 
@@ -86,6 +88,21 @@ Peforms seven Signal Quality Indicies (SQIs) to determine the quality of the ECG
 6. fSQI: Calculates the percentage of the signal which appeared to be a flat line
 7. basSQI: Calculates the relative power in the baseline
 
-[1]: McSharry P. E., Clifford G. D., Tarassenko, L. and Smith, L. "A Dynamical Model for Generating Synthetic Electrocardiogram Signals". In _IEEE Transactions on Biomedical Engineering_ *50*(3): 289--294; March 2003.
 
+#### `./d33_rendering`
+
+```
+bioharness_grabber.py        # Using the zephyr-bt library, this outputs the ECG signal to stdout
+bioharness_grabber.sh        # A wrapper for the python code
+d3.js                        # D3.JS is a very good JavaScript charting engine
+render_bioharness.html       # A static HTML file containing the Zephyr BioHarness grapher
+```
+
+Render the ECG signal from the Zephyr BioHarness on a tablet with ease. Run the `bioharness_grabber.sh` script[2] through `websocketd`[3], to open a port for the client's browser to connect. By default this chart displays the most recent four seconds of data.
+
+---
+
+[1]: McSharry P. E., Clifford G. D., Tarassenko, L. and Smith, L. "A Dynamical Model for Generating Synthetic Electrocardiogram Signals". In _IEEE Transactions on Biomedical Engineering_ *50*(3): 289--294; March 2003.
+[2]: zephyr-bt: https://github.com/jpaalasm/zephyr-bt
+[3]: websocketd: https://github.com/joewalnes/websocketd
 
